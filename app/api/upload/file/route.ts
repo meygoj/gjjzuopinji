@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
+// Next.js 13+ App Router 配置
+export const maxDuration = 60; // 60秒超时
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -20,8 +24,10 @@ export async function POST(request: NextRequest) {
       fs.mkdirSync(uploadDir, { recursive: true })
     }
 
+    // 清理文件名中的特殊字符，避免URL编码问题
+    const cleanFileName = file.name.replace(/[^\w.\-_]/g, '_')
     // 生成唯一文件名
-    const fileName = `${Date.now()}_${file.name}`
+    const fileName = `${Date.now()}_${cleanFileName}`
     const filePath = path.join(uploadDir, fileName)
 
     console.log('Saving file to:', filePath)

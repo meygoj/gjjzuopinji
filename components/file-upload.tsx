@@ -13,7 +13,7 @@ interface FileUploadProps {
 export function FileUpload({ 
   onFileUpload, 
   acceptedTypes = "image/*,video/*", 
-  maxSize = 10 * 1024 * 1024, // 10MB
+  maxSize = 500 * 1024 * 1024, // 500MB
   className = ""
 }: FileUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
@@ -43,7 +43,7 @@ export function FileUpload({
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="block text-sm font-medium text-gray-700">
-        上传文件
+        上传文件 <span className="text-gray-500">（最大 {maxSize / 1024 / 1024}MB）</span>
       </label>
       <div className="flex items-center gap-3">
         <input
@@ -60,9 +60,9 @@ export function FileUpload({
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isUploading ? (
-            <Loader2 className="size-4 animate-spin" />
+            <><Loader2 className="size-4 animate-spin inline mr-1" /> 上传中...</>
           ) : (
-            <Upload className="size-4" />
+            <><Upload className="size-4 inline mr-1" /> 选择文件</>
           )}
         </button>
       </div>

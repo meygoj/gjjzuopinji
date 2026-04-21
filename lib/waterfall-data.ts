@@ -12,14 +12,6 @@ export interface WaterfallItem {
 
 export const waterfallItems: WaterfallItem[] = [
   {
-    "id": "1",
-    "src": "/images/work-livestream.jpg",
-    "alt": "直播引擎",
-    "title": "爆款直播引擎",
-    "category": "直播运营",
-    "aspectRatio": 0.8
-  },
-  {
     "id": "livestream-1",
     "src": "/uploads/1776501522023_GM01.jpg",
     "alt": "直播场景 1",
@@ -348,30 +340,6 @@ export const waterfallItems: WaterfallItem[] = [
     "aspectRatio": 1
   },
   {
-    "id": "2",
-    "src": "/images/work-aigc.jpg",
-    "alt": "品牌视觉",
-    "title": "品牌视觉资产",
-    "category": "AIGC · 设计",
-    "aspectRatio": 0.75
-  },
-  {
-    "id": "3",
-    "src": "/images/work-workflow.jpg",
-    "alt": "内容流水线",
-    "title": "内容工业化流水线",
-    "category": "自动化工作流",
-    "aspectRatio": 1.25
-  },
-  {
-    "id": "4",
-    "src": "/images/work-data.jpg",
-    "alt": "商业数据",
-    "title": "商业数据矩阵",
-    "category": "数据可视化",
-    "aspectRatio": 1.7777777777777777
-  },
-  {
     "id": "5",
     "src": "/images/avatar.jpg",
     "alt": "头像",
@@ -654,6 +622,248 @@ export const waterfallItems: WaterfallItem[] = [
     "alt": "",
     "title": "本地生活小程序",
     "category": "数据可视化",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776788290247",
+    "src": "/uploads/1776788316728_MoneyPrinterTurbo_A_beautiful_Chinese_goddess_standing_on_a_lon_6f481304-5cdc-4d80-a0a5-1e190cb9f8ba.png",
+    "alt": "提示词：A beautiful Chinese goddess standing on a long golden staircase leading to a grand celestial golden palace. Environment: Floating in a vast sea of thick white clouds, epic scale, mythical heaven atmosphere. Lighting: Sunset backlighting, cinematic lighting, glowing gold reflections, Tyndall effect. Style: Unreal Engine 5 render, highly detailed architectural details, traditional Chinese aesthetics, 8k, masterpiece. --ar 9:16 --profile 1rthqox qefd45n --v 7",
+    "title": "Midjourney",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776788421288",
+    "src": "/uploads/1776788428311_spy_006_a_wide_angle_vertical_shot_from_an_eye_level_perspectiv_fcfecfd8-fb9b-4a77-ae4d-5d53ab9413e0.png",
+    "alt": "提示词：a wide angle vertical shot from an eye level perspective shows a narrow river surrounded by a dense tropical forest. the sky is a clear blue, peeking through the canopy of numerous palm trees. the vibrant green leaves of the trees extend from the top corners down the sides, meeting the dark banks of the river. the river's surface is predominantly dark green with reflections of the blue sky and trees, showing subtle ripples. several small boats are moored on the sides of the river further into the scene, which fades into the bright light of the distance. --chaos 20 --ar 9:16 --raw --profile 2t2p4lp --v 7",
+    "title": "Midjourney",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776788744943",
+    "src": "/uploads/1776792905231_____________________ai________ai__.mp4",
+    "alt": "多批量人物处理",
+    "title": "Comfyui批量工作流",
+    "category": "自动化工作流",
+    "aspectRatio": 0.8,
+    "isVideo": true,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793527539",
+    "src": "/uploads/1776793542459_0_3.png",
+    "alt": "",
+    "title": "MJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793553354",
+    "src": "/uploads/1776793557676_jqnotu_A_vintage_oil_painting_of_a_grumpy_german_shepherd_with__532e63cb-eb4e-4202-975e-b1f5efa25e09.png",
+    "alt": "",
+    "title": "MJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793654329",
+    "src": "/uploads/1776793677521_oIAAaIAlb00AtNsQcoiZEi7AeEEBIwAeXEfDgK_tplv-dy-aweme-images-ds-rs-v1_1440_2574_q80.jpeg",
+    "alt": "",
+    "title": "漫剧人物",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793694312",
+    "src": "/uploads/1776793702207______________________________________________________ai____ai____ai________0.png",
+    "alt": "",
+    "title": "漫剧人物",
+    "category": "自动化工作流",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793714383",
+    "src": "/uploads/1776793726271______________________________________________________ai____ai____ai________1.png",
+    "alt": "",
+    "title": "任务细节",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793739365",
+    "src": "/uploads/1776793747051______________________________________________________ai____ai____ai________2.png",
+    "alt": "",
+    "title": "人物细节",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793760095",
+    "src": "/uploads/1776793768382______________________________________________________ai____ai____ai________3.png",
+    "alt": "",
+    "title": "人物",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776793778141",
+    "src": "/uploads/1776793783876______________________________________________________ai____ai____ai________4.png",
+    "alt": "",
+    "title": "人物细节",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776794268179",
+    "src": "/uploads/1776794290843_3c2d7fbd3c118c60b046ba6d2b5372ec.png",
+    "alt": "",
+    "title": "剪辑",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776794316052",
+    "src": "/uploads/1776794325911_bb5e42f0a16425b48d11c69d604d562c.png",
+    "alt": "",
+    "title": "剪辑",
+    "category": "直播运营",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776794379510",
+    "src": "/uploads/1776794535477_07b9adbb91883f237f8ffa8c48ed8e3d.png",
+    "alt": "",
+    "title": "视频",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776794548488",
+    "src": "/uploads/1776798382424____81_.mp4",
+    "alt": "",
+    "title": "图文视频",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": true,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795167567",
+    "src": "/uploads/1776795189466_guodaxia_90492__16_769507-0484-0094-__3D32K_--ar_43_--sref_ht_d95e4029-05cc-46e7-a7e5-67707b03f1d2_0.png",
+    "alt": "东方玄幻漫画风格 一位年轻的女子，大约16岁，长发，身穿朴素的长裙，她表情紧张，眼神闪避，站在剑宗山门前，旁边是年轻的男子，他表情严肃，周围是一片清晨的山林环境，中景。; 769507-0484-0094-, 完美细节，精致五, 3D国漫国潮插画风格,战斗姿态,柔和光照，阴影细节增强,自然光,武侠动作风格，中国元素风格，精致立体五官，金色粒子漂浮，粒子效果，大师画质，大师作品，国潮插画师构图，完美画质，远景全身图，32K",
+    "title": "NJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795302058",
+    "src": "/uploads/1776795308318_guodaxia_90492__20_769453-0430-0084-__3D32K_--ar_43_--sref_ht_6565035b-f0ff-45de-aa1b-f2edec9e89e2_3.png",
+    "alt": "东方玄幻漫画风格 一个20多岁俊俏的年轻男人，黑色长发，红色的瞳孔，身穿黄色的长袍，他转过头，对旁边的女子轻轻抬了抬下巴，表情温和，站在石碑旁边，中景。; 769453-0430-0084-, 完美细节，精致五, 3D国漫国潮插画风格,战斗姿态,柔和光照，阴影细节增强,自然光,武侠动作风格，中国元素风格，精致立体五官，金色粒子漂浮，粒子效果，大师画质，大师作品，国潮插画师构图，完美画质，远景全身图，32K",
+    "title": "NJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 1.78,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795523247",
+    "src": "/uploads/1776798328186_MyVideo_1.mp4",
+    "alt": "",
+    "title": "图文视频",
+    "category": "自动化工作流",
+    "aspectRatio": 1.78,
+    "isVideo": true,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795742610",
+    "src": "/uploads/1776795751351_Rayhan_A_office_chair_highlight_in_sun_ray_coming_from_a_side_i_7e3762f3-b509-4b3a-859a-39ee4cd48d61.png",
+    "alt": "A office chair highlight in sun ray coming from a side in a dark room, the text \"We Are Hiring\" placed in the top --ar 2:3 --v 7",
+    "title": "MJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795802910",
+    "src": "/uploads/1776795810213_asfhgt_A_90s_vintage_bootleg_streetwear_poster_on_a_black_backg_486a4714-7a10-4e25-a679-55a7332b93b8.png",
+    "alt": "A office chair highlight in sun ray coming from a side in a dark room, the text \"We Are Hiring\" placed in the top --ar 2:3 --v 7",
+    "title": "MJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795837952",
+    "src": "/uploads/1776795844060_dzudzubajac_beautiful_kids_book_cover_illustration_the_name_of__0611945f-bac2-46f5-b95e-d2e54d8b1df1.png",
+    "alt": "A office chair highlight in sun ray coming from a side in a dark room, the text \"We Are Hiring\" placed in the top --ar 2:3 --v 7",
+    "title": "MJ",
+    "category": "AIGC · 设计",
+    "aspectRatio": 0.8,
+    "isVideo": false,
+    "originalSrc": "",
+    "compareSrc": []
+  },
+  {
+    "id": "item-1776795890954",
+    "src": "/uploads/1776795899380_hecate_sunny_day_in_a_field_black_and_white_drawing_--v_7_f40f6f94-bc2c-4b60-9e57-c5a1ad0e418a.png",
+    "alt": "sunny day in a field black and white drawing",
+    "title": "MJ",
+    "category": "AIGC · 设计",
     "aspectRatio": 0.8,
     "isVideo": false,
     "originalSrc": "",

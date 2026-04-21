@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import Image from "next/image"
 
 // 像素风格瀑布流
@@ -39,6 +39,9 @@ export function IrregularWaterfall({
 }: IrregularWaterfallProps) {
   const [selectedItem, setSelectedItem] = useState<WaterfallItem | null>(null)
   const [comparisonPreview, setComparisonPreview] = useState<ComparisonPreview | null>(null)
+  const [videoLoaded, setVideoLoaded] = useState<{ [key: string]: boolean }>({})
+  const [touchStates, setTouchStates] = useState<{ [key: string]: { isPressed: boolean; scale: number } }>({})
+  const touchTimerRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
 
   const mainItems = useMemo(() => items.filter(item => item.src), [items])
   const comparisonItems = useMemo(() => items.filter(item => 
@@ -49,6 +52,33 @@ export function IrregularWaterfall({
   const handleClose = () => {
     setSelectedItem(null)
     setComparisonPreview(null)
+  }
+
+  // 触摸开始
+  const handleTouchStart = (id: string) => {
+    setTouchStates(prev => ({ ...prev, [id]: { isPressed: true, scale: 0.95 } }))
+    
+    // 长按效果
+    touchTimerRef.current[id] = setTimeout(() => {
+      setTouchStates(prev => ({ ...prev, [id]: { isPressed: true, scale: 1.05 } }))
+      // 添加轻微振动反馈
+      if (navigator.vibrate) {
+        navigator.vibrate(10)
+      }
+    }, 200)
+  }
+
+  // 触摸结束
+  const handleTouchEnd = (id: string) => {
+    if (touchTimerRef.current[id]) {
+      clearTimeout(touchTimerRef.current[id])
+    }
+    setTouchStates(prev => ({ ...prev, [id]: { isPressed: false, scale: 1 } }))
+    
+    // 快速释放振动
+    if (navigator.vibrate) {
+      navigator.vibrate(5)
+    }
   }
 
   const renderComparisonView = (item: WaterfallItem) => {
@@ -146,32 +176,80 @@ export function IrregularWaterfall({
                 style={{ flex: 1, minWidth: 0, gap: `${gap}px` }}
               >
                 {mainItems
-                  .filter((_, index) => index % columns === columnIndex)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => setSelectedItem(item)}
-                      className="group relative overflow-hidden border-2 border-pixel-coffee bg-pixel-cream shadow-[4px_4px_0_0_rgba(92,48,38,0.25)] cursor-pointer"
-                    >
-                      {item.isVideo ? (
-                        <video
-                          src={item.src}
-                          alt={item.alt}
-                          className="w-full object-cover"
-                          muted
-                          loop
-                          playsInline
-                        />
-                      ) : (
-                        <div className="relative" style={{ aspectRatio: item.aspectRatio || 'auto' }}>
-                          <Image
-                            src={item.src}
-                            alt={item.alt}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
+                    .filter((_, index) => index % columns === columnIndex)
+                    .map((item) => {
+                      const touchState = touchStates[item.id] || { isPressed: false, scale: 1 }
+                      return (
+                      <div
+                        key={item.id}
+                        onClick={(e) => {
+                          // 如果点击的是视频或视频控件，不打开预览
+                          const target = e.target as HTMLElement
+                          if (target.closest('video') || target.closest('button')) {
+                            return
+                          }
+                          setSelectedItem(item)
+                        }}
+                        onTouchStart={() => handleTouchStart(item.id)}
+                        onTouchEnd={() => handleTouchEnd(item.id)}
+                        onTouchCancel={() => handleTouchEnd(item.id)}
+                        onMouseDown={() => handleTouchStart(item.id)}
+                        onMouseUp={() => handleTouchEnd(item.id)}
+                        onMouseLeave={() => handleTouchEnd(item.id)}
+                        style={{
+                          transform: `scale(${touchState.scale})`,
+                          transition: 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                        className={`group relative overflow-hidden border-2 border-pixel-coffee bg-pixel-cream cursor-pointer
+                          ${touchState.isPressed ? 'z-20' : 'z-10'}
+                          ${touchState.scale > 1 ? 'shadow-[10px_10px_0_0_rgba(92,48,38,0.4)]' : 'shadow-[6px_6px_0_0_rgba(92,48,38,0.25)]'}
+                        `}
+                      >
+                        {item.isVideo ? (
+                          <div className="relative" style={{ aspectRatio: item.aspectRatio || 'auto' }}>
+                            <video
+                              src={encodeURI(item.src)}
+                              alt={item.alt}
+                              className="w-full h-full object-cover"
+                              controls
+                              playsInline
+                              preload="auto"
+                              onClick={(e) => e.stopPropagation()}
+                              onPlay={(e) => e.stopPropagation()}
+                              onPause={(e) => e.stopPropagation()}
+                              onLoadedMetadata={() => {
+                                setVideoLoaded(prev => ({ ...prev, [item.id]: true }))
+                              }}
+                              onError={(e) => {
+                                console.error('视频加载失败:', item.src)
+                                setVideoLoaded(prev => ({ ...prev, [item.id]: 'error' }))
+                              }}
+                            />
+                            {videoLoaded[item.id] === undefined && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-pixel-coffee/20">
+                                <div className="text-pixel-cream text-sm">加载中...</div>
+                              </div>
+                            )}
+                            {videoLoaded[item.id] === 'error' && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-pixel-coffee/40">
+                                <div className="text-pixel-cream text-sm text-center p-2">
+                                  <div>视频加载失败</div>
+                                  <div className="text-xs mt-1">请检查文件路径</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="relative" style={{ aspectRatio: item.aspectRatio || 'auto' }}>
+                            <Image
+                              src={item.src}
+                              alt={item.alt}
+                              fill
+                              className="object-cover"
+                              unoptimized={true}
+                            />
+                          </div>
+                        )}
 
                       {item.category && (
                         <span className="absolute right-2 top-2 border border-pixel-coffee bg-pixel-cream/95 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-pixel-coffee">
@@ -180,11 +258,25 @@ export function IrregularWaterfall({
                       )}
 
                       {showTitle && item.title && (
-                        <div className="absolute inset-0 flex translate-y-2 flex-col justify-end bg-gradient-to-t from-pixel-coffee/95 via-pixel-coffee/70 to-transparent p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                        <div className={`absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-pixel-coffee/95 via-pixel-coffee/70 to-transparent p-3 transition-all duration-300
+                          ${touchState.isPressed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}
+                        `}>
                           <p className="font-display text-base leading-tight text-pixel-cream">
                             {item.title}
                           </p>
+                          {/* 手机端提示 */}
+                          <p className="mt-1 font-mono text-[10px] text-pixel-amber/80 sm:hidden">
+                            点击查看详情 →
+                          </p>
                         </div>
+                      )}
+
+                      {/* 触摸装饰效果 */}
+                      {touchState.isPressed && (
+                        <>
+                          <div className="absolute inset-0 border-4 border-pixel-amber/60 pointer-events-none animate-pulse" />
+                          <div className="absolute inset-0 bg-pixel-amber/10 pointer-events-none" />
+                        </>
                       )}
 
                       <span className="absolute left-0 top-0 size-1.5 bg-pixel-amber" />
@@ -192,7 +284,7 @@ export function IrregularWaterfall({
                       <span className="absolute bottom-0 left-0 size-1.5 bg-pixel-amber" />
                       <span className="absolute bottom-0 right-0 size-1.5 bg-pixel-amber" />
                     </div>
-                  ))}
+                  )})}
               </div>
             ))}
           </div>
@@ -207,10 +299,15 @@ export function IrregularWaterfall({
           <div className="relative max-w-[90vw] max-h-[90vh]">
             {selectedItem?.isVideo ? (
               <video
-                src={selectedItem.src}
+                src={encodeURI(selectedItem.src)}
                 controls
                 autoPlay
+                playsInline
                 className="max-w-[90vw] max-h-[90vh] rounded-lg object-contain"
+                onClick={(e) => e.stopPropagation()}
+                onError={(e) => {
+                  console.error('预览视频加载失败:', selectedItem.src)
+                }}
               />
             ) : selectedItem ? (
               <Image

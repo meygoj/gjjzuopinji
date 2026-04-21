@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Video, ImageIcon } from "lucide-react"
+import { useState, useRef } from "react"
 
 interface MasonryCardProps {
   work: {
@@ -21,10 +22,44 @@ interface MasonryCardProps {
 
 export function MasonryCard({ work, aspectClass, isVisible = true }: MasonryCardProps) {
   const isUploaded = work.type !== undefined
+  const [isPressed, setIsPressed] = useState(false)
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+
+  const handleTouchStart = () => {
+    setIsPressed(true)
+    longPressTimer.current = setTimeout(() => {
+      if (navigator.vibrate) {
+        navigator.vibrate([10, 50, 10])
+      }
+    }, 300)
+  }
+
+  const handleTouchEnd = () => {
+    setIsPressed(false)
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+    }
+    if (navigator.vibrate) {
+      navigator.vibrate(10)
+    }
+  }
 
   return (
     <Link
       href={isUploaded ? "#" : `/work/${work.slug}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onMouseDown={handleTouchStart}
+      onMouseUp={handleTouchEnd}
+      onMouseLeave={handleTouchEnd}
+      style={{
+        transform: isPressed ? 'translateX(2px) translateY(2px) scale(0.98)' : 'translateX(0) translateY(0)',
+        boxShadow: isPressed 
+          ? '0 0 0 0 rgba(92,48,38,0)' 
+          : '4px 4px 0 0 rgba(92,48,38,0.25)',
+        transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
       className={`group mb-4 block break-inside-avoid border-2 border-pixel-coffee bg-pixel-cream shadow-[4px_4px_0_0_rgba(92,48,38,0.25)] transition-all duration-500 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_rgba(92,48,38,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-pixel-orange ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
@@ -33,12 +68,16 @@ export function MasonryCard({ work, aspectClass, isVisible = true }: MasonryCard
       <div className={`relative w-full overflow-hidden ${aspectClass}`}>
         {work.type === "video" ? (
           <video
-            src={work.cover}
-            muted
-            loop
+            src={encodeURI(work.cover)}
             playsInline
-            autoPlay
+            controls
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onClick={(e) => e.stopPropagation()}
+            onPlay={(e) => e.stopPropagation()}
+            onPause={(e) => e.stopPropagation()}
+            onError={(e) => {
+              console.error('视频加载失败:', work.cover)
+            }}
           />
         ) : (
           <Image
@@ -66,7 +105,9 @@ export function MasonryCard({ work, aspectClass, isVisible = true }: MasonryCard
           </div>
         )}
 
-        <div className="absolute inset-0 flex translate-y-2 flex-col justify-end bg-gradient-to-t from-pixel-coffee/95 via-pixel-coffee/70 to-transparent p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <div className={`absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-pixel-coffee/95 via-pixel-coffee/70 to-transparent p-3 transition-all duration-300
+          ${isPressed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}
+        `}>
           <p className="font-display text-base leading-tight text-pixel-cream">
             {work.title}
           </p>
@@ -94,7 +135,19 @@ export function MasonryCard({ work, aspectClass, isVisible = true }: MasonryCard
               </span>
             </div>
           )}
+          {/* 手机端提示 */}
+          <p className="mt-1 font-mono text-[8px] text-pixel-amber/60 sm:hidden">
+            点击查看详情 →
+          </p>
         </div>
+
+        {/* 触摸装饰效果 */}
+        {isPressed && (
+          <>
+            <div className="absolute inset-0 border-4 border-pixel-amber/60 pointer-events-none animate-pulse" />
+            <div className="absolute inset-0 bg-pixel-amber/15 pointer-events-none" />
+          </>
+        )}
 
         <span className="absolute left-0 top-0 size-1.5 bg-pixel-amber" />
         <span className="absolute right-0 top-0 size-1.5 bg-pixel-amber" />
