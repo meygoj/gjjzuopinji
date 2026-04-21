@@ -26,7 +26,7 @@ const vt323 = VT323({
 })
 
 export const metadata: Metadata = {
-  title: '像素工坊 · Pixel Atelier',
+  title: '郭建军-创意营销操盘手.portfolio',
   description: '一个暖色像素风格的个人作品集，收藏影像与动态艺术。',
   generator: 'v0.app',
 }
