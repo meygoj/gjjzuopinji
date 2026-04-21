@@ -3,49 +3,14 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { PixelBackground } from "./pixel-background"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 export function WelcomeScreen() {
   const [mounted, setMounted] = useState(false)
-  const [buttonPressed, setButtonPressed] = useState(false)
-  const [dataPressed, setDataPressed] = useState<number | null>(null)
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // 按钮触摸效果
-  const handleButtonTouchStart = () => {
-    setButtonPressed(true)
-    longPressTimer.current = setTimeout(() => {
-      if (navigator.vibrate) {
-        navigator.vibrate([10, 50, 10])
-      }
-    }, 500)
-  }
-
-  const handleButtonTouchEnd = () => {
-    setButtonPressed(false)
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current)
-    }
-    if (navigator.vibrate) {
-      navigator.vibrate(10)
-    }
-  }
-
-  // 数据卡片触摸效果
-  const handleDataTouchStart = (index: number) => {
-    setDataPressed(index)
-    if (navigator.vibrate) {
-      navigator.vibrate(5)
-    }
-  }
-
-  const handleDataTouchEnd = () => {
-    setDataPressed(null)
-  }
 
   return (
     <main className="relative flex min-h-dvh w-full items-center justify-center overflow-hidden bg-pixel-cream">
@@ -93,19 +58,6 @@ export function WelcomeScreen() {
         {/* 进入按钮 */}
         <Link
           href="/work"
-          onTouchStart={handleButtonTouchStart}
-          onTouchEnd={handleButtonTouchEnd}
-          onTouchCancel={handleButtonTouchEnd}
-          onMouseDown={handleButtonTouchStart}
-          onMouseUp={handleButtonTouchEnd}
-          onMouseLeave={handleButtonTouchEnd}
-          style={{
-            transform: buttonPressed ? 'translateX(4px) translateY(4px) scale(0.98)' : 'translateX(0) translateY(0)',
-            boxShadow: buttonPressed 
-              ? '0 0 0 0 rgba(92,48,38,0)' 
-              : '6px 6px 0 0 rgba(92,48,38,0.35)',
-            transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}
           className="group relative mt-2 inline-flex items-center gap-4 border-2 border-pixel-coffee bg-pixel-coffee px-8 py-4 font-display text-xl text-pixel-cream shadow-[6px_6px_0_0_rgba(92,48,38,0.35)] transition-all duration-150 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_rgba(92,48,38,0.35)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         >
           <span className="relative">
@@ -119,14 +71,6 @@ export function WelcomeScreen() {
           <span className="absolute -right-1 -top-1 h-2 w-2 bg-pixel-amber" />
           <span className="absolute -bottom-1 -left-1 h-2 w-2 bg-pixel-amber" />
           <span className="absolute -bottom-1 -right-1 h-2 w-2 bg-pixel-amber" />
-          
-          {/* 触摸装饰效果 */}
-          {buttonPressed && (
-            <>
-              <div className="absolute inset-0 bg-pixel-amber/30 animate-pulse" />
-              <div className="absolute inset-0 border-2 border-pixel-amber/60" />
-            </>
-          )}
         </Link>
 
         <div className="float-hint font-mono text-xs uppercase tracking-[0.4em] text-pixel-coffee/70">
@@ -144,18 +88,7 @@ export function WelcomeScreen() {
         ].map(([num, label], i) => (
           <div
             key={num}
-            onTouchStart={() => handleDataTouchStart(i)}
-            onTouchEnd={handleDataTouchEnd}
-            onTouchCancel={handleDataTouchEnd}
-            onMouseDown={() => handleDataTouchStart(i)}
-            onMouseUp={handleDataTouchEnd}
-            onMouseLeave={handleDataTouchEnd}
-            style={{
-              transform: dataPressed === i ? 'scale(0.95)' : 'scale(1)',
-              backgroundColor: dataPressed === i ? 'rgba(255,156,116,0.3)' : 'transparent',
-              transition: 'all 0.1s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-            className={`flex flex-1 flex-col items-center justify-center px-2 py-2 text-center sm:py-3 cursor-pointer ${
+            className={`flex flex-1 flex-col items-center justify-center px-2 py-2 text-center sm:py-3 ${
               i > 0 ? "border-l-2 border-pixel-cream/20" : ""
             }`}
           >
@@ -164,10 +97,6 @@ export function WelcomeScreen() {
             </span>
             <span className="mt-1 font-mono text-[9px] uppercase tracking-widest text-pixel-cream/70 sm:text-[10px]">
               {label}
-            </span>
-            {/* 手机端提示 */}
-            <span className="mt-1 font-mono text-[8px] text-pixel-amber/60 sm:hidden">
-              点击查看
             </span>
           </div>
         ))}

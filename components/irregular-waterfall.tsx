@@ -190,12 +190,15 @@ export function IrregularWaterfall({
                           }
                           setSelectedItem(item)
                         }}
-                        onTouchStart={() => handleTouchStart(item.id)}
-                        onTouchEnd={() => handleTouchEnd(item.id)}
-                        onTouchCancel={() => handleTouchEnd(item.id)}
                         onMouseDown={() => handleTouchStart(item.id)}
                         onMouseUp={() => handleTouchEnd(item.id)}
                         onMouseLeave={() => handleTouchEnd(item.id)}
+                        onTouchStart={() => {
+                          handleTouchStart(item.id)
+                        }}
+                        onTouchEnd={() => {
+                          handleTouchEnd(item.id)
+                        }}
                         style={{
                           transform: `scale(${touchState.scale})`,
                           transition: 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1)'

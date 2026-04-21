@@ -47,12 +47,15 @@ export function MasonryCard({ work, aspectClass, isVisible = true }: MasonryCard
   return (
     <Link
       href={isUploaded ? "#" : `/work/${work.slug}`}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
       onMouseDown={handleTouchStart}
       onMouseUp={handleTouchEnd}
       onMouseLeave={handleTouchEnd}
+      onTouchStart={() => {
+        handleTouchStart()
+      }}
+      onTouchEnd={() => {
+        handleTouchEnd()
+      }}
       style={{
         transform: isPressed ? 'translateX(2px) translateY(2px) scale(0.98)' : 'translateX(0) translateY(0)',
         boxShadow: isPressed 
