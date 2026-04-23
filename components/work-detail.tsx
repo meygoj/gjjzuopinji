@@ -8,8 +8,135 @@ import { ProfileHeader } from "./profile-header"
 import { StatusBar } from "./status-bar"
 import { SiteFooter } from "./site-footer"
 import { IrregularWaterfall } from "./irregular-waterfall"
+import { ComparisonCarousel } from "./comparison-carousel"
 import { worksBySlug, type WorkDetailData } from "@/lib/works-data"
 import { waterfallItems } from "@/lib/waterfall-data"
+
+// 对比图数据
+const comparisonGroups = [
+  {
+    id: 'group1',
+    title: 'AIGC设计对比组1',
+    originalImage: {
+      src: '/uploads/1776590821262_SP01.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776590828966_SP25.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776590834155_SP26.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group2',
+    title: 'AIGC设计对比组2',
+    originalImage: {
+      src: '/uploads/1776590753927_SP05.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776590761710_SP16.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776590768932_SP15.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group3',
+    title: 'AIGC设计对比组3',
+    originalImage: {
+      src: '/uploads/1776601301605_SP03.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776601308159_SP13.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776601317676_SP11.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group4',
+    title: 'AIGC设计对比组4',
+    originalImage: {
+      src: '/uploads/1776603971353_SP07.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776601650315_SP21.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776601662401_SP20.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group5',
+    title: 'AIGC设计对比组5',
+    originalImage: {
+      src: '/uploads/1776604012431_SP06.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776602618602_SP17.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776602632060_SP19.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group6',
+    title: 'AIGC设计对比组6',
+    originalImage: {
+      src: '/uploads/1776603641853_SP10.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776603677249_SP27.png',
+        label: '设计图1'
+      }
+    ]
+  },
+  {
+    id: 'group7',
+    title: 'AIGC设计对比组7',
+    originalImage: {
+      src: '/uploads/1776604061324_SP08.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776604066479_SP23.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776604070948_SP24.png',
+        label: '设计图2'
+      }
+    ]
+  }
+]
 
 export function WorkDetail({ work }: { work: WorkDetailData }) {
   const allWorks = Object.values(worksBySlug)
@@ -21,6 +148,71 @@ export function WorkDetail({ work }: { work: WorkDetailData }) {
     waterfallItems.filter(item => item.category === work.category),
     [work.category]
   )
+
+  // 渲染作品展示区
+  const renderWorkShowcase = () => {
+    if (work.category === 'AIGC · 设计') {
+      // AIGC 设计板块：对比图轮播 + 自动滚动瀑布流
+      return (
+        <>
+          <section className="my-12">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+              <span className="font-mono text-[11px] tracking-[0.3em] text-pixel-coffee/70 md:text-xs">
+                {work.category} · 对比图展示
+              </span>
+              <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+            </div>
+            <ComparisonCarousel 
+              groups={comparisonGroups} 
+              autoPlay={true}
+              autoPlayInterval={4000}
+            />
+          </section>
+          <section className="my-12">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+              <span className="font-mono text-[11px] tracking-[0.3em] text-pixel-coffee/70 md:text-xs">
+                {work.category} · 作品瀑布流
+              </span>
+              <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+            </div>
+            <IrregularWaterfall 
+              items={filteredWaterfallItems} 
+              columns={4}
+              gap={16}
+              showTitle={true}
+              autoScroll={true}
+              autoScrollSpeed={0.8}
+              autoScrollDirection="up"
+            />
+          </section>
+        </>
+      )
+    } else {
+      // 其他板块：自动滚动瀑布流
+      return (
+        <section className="my-12">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+            <span className="font-mono text-[11px] tracking-[0.3em] text-pixel-coffee/70 md:text-xs">
+              {work.category} · 作品展示
+            </span>
+            <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+          </div>
+          <IrregularWaterfall 
+            items={filteredWaterfallItems} 
+            columns={4}
+            gap={16}
+            showTitle={true}
+            autoScroll={true}
+            autoScrollSpeed={0.8}
+            autoScrollDirection="up"
+          />
+        </section>
+      )
+    }
+  }
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-6 md:gap-14 md:px-6 md:py-10">
@@ -76,21 +268,8 @@ export function WorkDetail({ work }: { work: WorkDetailData }) {
         </div>
       </div>
 
-      <section className="my-12">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
-          <span className="font-mono text-[11px] tracking-[0.3em] text-pixel-coffee/70 md:text-xs">
-            {work.category} · 作品展示
-          </span>
-          <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
-        </div>
-        <IrregularWaterfall
-          items={filteredWaterfallItems}
-          columns={4}
-          gap={16}
-          showTitle={true}
-        />
-      </section>
+      {/* 作品展示区 */}
+      {renderWorkShowcase()}
 
       <section className="grid grid-cols-3 gap-3 md:gap-4">
         {work.highlights.map((h) => (

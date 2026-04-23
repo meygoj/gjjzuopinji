@@ -1,20 +1,151 @@
-import Link from "next/link"
-import { PixelBackground } from "@/components/pixel-background"
-import { ProfileHeader } from "@/components/profile-header"
-import { IrregularWaterfall } from "@/components/irregular-waterfall"
-import { waterfallItems } from "@/lib/waterfall-data"
+'use client'
 
-export const metadata = {
-  title: "全部作品 · 郭建军作品集",
-  description: "瀑布流浏览全部营销、直播、AIGC 与自动化作品",
-}
+import Link from 'next/link'
+import { PixelBackground } from '@/components/pixel-background'
+import { ProfileHeader } from '@/components/profile-header'
+import { ComparisonCarousel } from '@/components/comparison-carousel'
+import { IrregularWaterfall } from '@/components/irregular-waterfall'
+import { waterfallItems } from '@/lib/waterfall-data'
+
+// 处理对比图数据
+const comparisonGroups = [
+  {
+    id: 'group1',
+    title: 'AIGC设计对比组1',
+    originalImage: {
+      src: '/uploads/1776590821262_SP01.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776590828966_SP25.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776590834155_SP26.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group2',
+    title: 'AIGC设计对比组2',
+    originalImage: {
+      src: '/uploads/1776590753927_SP05.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776590761710_SP16.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776590768932_SP15.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group3',
+    title: 'AIGC设计对比组3',
+    originalImage: {
+      src: '/uploads/1776601301605_SP03.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776601308159_SP13.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776601317676_SP11.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group4',
+    title: 'AIGC设计对比组4',
+    originalImage: {
+      src: '/uploads/1776603971353_SP07.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776601650315_SP21.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776601662401_SP20.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group5',
+    title: 'AIGC设计对比组5',
+    originalImage: {
+      src: '/uploads/1776604012431_SP06.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776602618602_SP17.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776602632060_SP19.png',
+        label: '设计图2'
+      }
+    ]
+  },
+  {
+    id: 'group6',
+    title: 'AIGC设计对比组6',
+    originalImage: {
+      src: '/uploads/1776603641853_SP10.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776603677249_SP27.png',
+        label: '设计图1'
+      }
+    ]
+  },
+  {
+    id: 'group7',
+    title: 'AIGC设计对比组7',
+    originalImage: {
+      src: '/uploads/1776604061324_SP08.jpg',
+      label: '原图'
+    },
+    designImages: [
+      {
+        src: '/uploads/1776604066479_SP23.png',
+        label: '设计图1'
+      },
+      {
+        src: '/uploads/1776604070948_SP24.png',
+        label: '设计图2'
+      }
+    ]
+  }
+]
 
 export default function AllWorksPage() {
+  // 分类筛选作品
+  const categories = ['直播运营', 'AIGC · 设计', '自动化工作流', '数据可视化']
+  
+  const getCategoryItems = (category: string) => {
+    return waterfallItems.filter(item => item.category === category)
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-pixel-cream">
       <PixelBackground variant="soft" className="fixed inset-0 z-0 opacity-50" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-10">
         <ProfileHeader />
 
         <header className="flex flex-col gap-3 border-2 border-pixel-coffee bg-pixel-cream/90 p-5 shadow-[5px_5px_0_0_rgba(92,48,38,0.2)] backdrop-blur-sm sm:flex-row sm:items-end sm:justify-between sm:p-6">
@@ -27,7 +158,7 @@ export default function AllWorksPage() {
               全部作品
             </h1>
             <p className="font-sans text-sm text-pixel-coffee/70">
-              多年实战经验沉淀，涵盖直播运营、品牌视觉、AIGC 与数据可视化等领域。
+              多年实战经验沉淀，涵盖直播运营、品牌视觉、AIGC 与自动化工作流。
             </p>
           </div>
           <Link
@@ -39,29 +170,51 @@ export default function AllWorksPage() {
           </Link>
         </header>
 
-        <IrregularWaterfall 
-          items={waterfallItems} 
-          columns={4}
-          gap={16}
-          showTitle={true}
-        />
+        {/* 对比图轮播区域 */}
+        <section className="border-2 border-pixel-coffee bg-pixel-cream p-6 shadow-[5px_5px_0_0_rgba(92,48,38,0.2)]">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="inline-flex items-center gap-2 border-2 border-pixel-coffee bg-pixel-amber px-3 py-1 font-display text-base text-pixel-coffee">
+              <span className="size-2 bg-pixel-coffee" />
+              对比图展示
+            </span>
+            <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-pixel-coffee/60">
+              原图 + 设计图对比
+            </span>
+          </div>
+          <ComparisonCarousel 
+            groups={comparisonGroups} 
+            autoPlay={true}
+            autoPlayInterval={4000}
+          />
+        </section>
 
-        <div className="flex flex-wrap items-center justify-center gap-6 border-2 border-pixel-coffee bg-pixel-coffee px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-pixel-cream/90">
-          <span className="inline-flex items-center gap-2">
-            <span className="size-1.5 bg-pixel-amber" />
-            悬停预览详情
-          </span>
-          <span className="hidden h-3 w-px bg-pixel-cream/30 sm:inline-block" />
-          <span className="inline-flex items-center gap-2">
-            <span className="size-1.5 bg-pixel-orange" />
-            滚动浏览全部
-          </span>
-          <span className="hidden h-3 w-px bg-pixel-cream/30 sm:inline-block" />
-          <span className="inline-flex items-center gap-2">
-            <span className="size-1.5 bg-pixel-terracotta" />
-            点击进入详情
-          </span>
-        </div>
+        {/* 各分类作品展示 - 自动滚动瀑布流 */}
+        {categories.map((category) => {
+          const items = getCategoryItems(category)
+          if (items.length === 0) return null
+          
+          return (
+            <section key={category} className="border-2 border-pixel-coffee bg-pixel-cream p-6 shadow-[5px_5px_0_0_rgba(92,48,38,0.2)]">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="inline-flex items-center gap-2 border-2 border-pixel-coffee bg-pixel-amber px-3 py-1 font-display text-base text-pixel-coffee">
+                  <span className="size-2 bg-pixel-coffee" />
+                  {category}
+                </span>
+                <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+              </div>
+              <IrregularWaterfall 
+                items={items} 
+                columns={4}
+                gap={16}
+                showTitle={true}
+                autoScroll={true}
+                autoScrollSpeed={0.8}
+                autoScrollDirection="up"
+              />
+            </section>
+          )
+        })}
       </div>
     </main>
   )

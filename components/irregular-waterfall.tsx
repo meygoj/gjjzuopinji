@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect, useCallback } from "react"
 import Image from "next/image"
 
 // 像素风格瀑布流
@@ -23,6 +23,9 @@ interface IrregularWaterfallProps {
   columns?: number
   gap?: number
   showTitle?: boolean
+  autoScroll?: boolean
+  autoScrollSpeed?: number
+  autoScrollDirection?: 'up' | 'down'
 }
 
 interface ComparisonPreview {
@@ -35,13 +38,20 @@ export function IrregularWaterfall({
   className = "",
   columns = 4,
   gap = 16,
-  showTitle = true
+  showTitle = true,
+  autoScroll = false,
+  autoScrollSpeed = 1,
+  autoScrollDirection = 'up'
 }: IrregularWaterfallProps) {
   const [selectedItem, setSelectedItem] = useState<WaterfallItem | null>(null)
   const [comparisonPreview, setComparisonPreview] = useState<ComparisonPreview | null>(null)
   const [videoLoaded, setVideoLoaded] = useState<{ [key: string]: boolean }>({})
   const [touchStates, setTouchStates] = useState<{ [key: string]: { isPressed: boolean; scale: number } }>({})
+  const [isPaused, setIsPaused] = useState(false)
   const touchTimerRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const animationFrameRef = useRef<number>()
+  const scrollPositionRef = useRef(0)
 
   const mainItems = useMemo(() => items.filter(item => item.src), [items])
   const comparisonItems = useMemo(() => items.filter(item => 
@@ -53,6 +63,52 @@ export function IrregularWaterfall({
     setSelectedItem(null)
     setComparisonPreview(null)
   }
+
+  // 自动滚动逻辑
+  useEffect(() => {
+    if (!autoScroll || !scrollContainerRef.current) {
+      return
+    }
+
+    const container = scrollContainerRef.current
+    
+    // 初始化滚动位置
+    scrollPositionRef.current = container.scrollTop
+
+    const animateScroll = () => {
+      if (!container || isPaused) {
+        animationFrameRef.current = requestAnimationFrame(animateScroll)
+        return
+      }
+
+      // 每次动画时获取最新的高度
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+      
+      if (autoScrollDirection === 'up') {
+        scrollPositionRef.current -= autoScrollSpeed
+        if (scrollPositionRef.current <= 0) {
+          scrollPositionRef.current = scrollHeight - clientHeight
+        }
+      } else {
+        scrollPositionRef.current += autoScrollSpeed
+        if (scrollPositionRef.current >= scrollHeight - clientHeight) {
+          scrollPositionRef.current = 0
+        }
+      }
+
+      container.scrollTop = scrollPositionRef.current
+      animationFrameRef.current = requestAnimationFrame(animateScroll)
+    }
+
+    animationFrameRef.current = requestAnimationFrame(animateScroll)
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
+    }
+  }, [autoScroll, autoScrollSpeed, autoScrollDirection, isPaused])
 
   // 触摸开始
   const handleTouchStart = (id: string) => {
@@ -164,9 +220,40 @@ export function IrregularWaterfall({
 
   return (
     <div className="relative">
+      {autoScroll && (
+        <div className="flex items-center justify-between mb-4 px-4">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-pixel-coffee/70">
+              自动滚动
+            </span>
+            <button
+              onClick={() => setIsPaused(!isPaused)}
+              className={`flex items-center gap-1 border-2 border-pixel-coffee px-3 py-1 font-mono text-[10px] transition-all
+                ${isPaused ? 'bg-pixel-cream text-pixel-coffee' : 'bg-pixel-coffee text-pixel-cream'}
+                hover:bg-pixel-amber hover:text-pixel-coffee active:scale-95
+              `}
+            >
+              {isPaused ? '▶ 继续' : '⏸ 暂停'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {comparisonItems.map(item => renderComparisonView(item))}
 
-      <div className={`relative w-full ${className}`} style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+      <div
+        ref={scrollContainerRef}
+        className={`relative w-full ${className}`}
+        style={{ maxHeight: '80vh', overflowY: 'auto' }}
+        onMouseEnter={() => autoScroll && setIsPaused(true)}
+        onMouseLeave={() => autoScroll && setIsPaused(false)}
+        onTouchStart={() => autoScroll && setIsPaused(true)}
+        onTouchEnd={() => {
+          if (autoScroll) {
+            setTimeout(() => setIsPaused(false), 3000)
+          }
+        }}
+      >
         <div className="p-4">
           <div className="flex" style={{ gap: `${gap}px` }}>
             {Array.from({ length: columns }).map((_, columnIndex) => (
