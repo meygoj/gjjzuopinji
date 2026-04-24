@@ -6,6 +6,7 @@ import { ProfileHeader } from '@/components/profile-header'
 import { ComparisonCarousel } from '@/components/comparison-carousel'
 import { IrregularWaterfall } from '@/components/irregular-waterfall'
 import { waterfallItems } from '@/lib/waterfall-data'
+import { worksBySlug } from '@/lib/works-data'
 
 // 处理对比图数据
 const comparisonGroups = [
@@ -134,10 +135,17 @@ const comparisonGroups = [
 ]
 
 export default function AllWorksPage() {
-  // 分类筛选作品
-  const categories = ['直播运营', 'AIGC · 设计', '自动化工作流', '数据可视化']
+  // 动态获取所有分类，过滤掉不需要的分类
+  const categories = [...new Set([
+    ...Object.values(worksBySlug).map(work => work.category),
+    ...waterfallItems.map(item => item.category)
+  ].filter(category => category && !['个人品牌', '摄影'].includes(category)))] as string[]
   
   const getCategoryItems = (category: string) => {
+    // 对于AIGC分类，过滤掉src为空的对比图组项目
+    if (category === 'AIGC · 设计') {
+      return waterfallItems.filter(item => item.category === category && item.src !== '')
+    }
     return waterfallItems.filter(item => item.category === category)
   }
 
@@ -170,28 +178,44 @@ export default function AllWorksPage() {
           </Link>
         </header>
 
-        {/* 对比图轮播区域 */}
-        <section className="border-2 border-pixel-coffee bg-pixel-cream p-6 shadow-[5px_5px_0_0_rgba(92,48,38,0.2)]">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="inline-flex items-center gap-2 border-2 border-pixel-coffee bg-pixel-amber px-3 py-1 font-display text-base text-pixel-coffee">
-              <span className="size-2 bg-pixel-coffee" />
-              对比图展示
-            </span>
-            <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
-            <span className="font-mono text-[10px] uppercase tracking-widest text-pixel-coffee/60">
-              原图 + 设计图对比
-            </span>
-          </div>
-          <ComparisonCarousel 
-            groups={comparisonGroups} 
-            autoPlay={true}
-            autoPlayInterval={4000}
-          />
-        </section>
-
-        {/* 各分类作品展示 - 自动滚动瀑布流 */}
+        {/* 各分类作品展示 */}
         {categories.map((category) => {
           const items = getCategoryItems(category)
+          
+          // AIGC · 设计分类：显示对比图轮播 + 瀑布流作品
+          if (category === 'AIGC · 设计') {
+            return (
+              <section key={category} className="border-2 border-pixel-coffee bg-pixel-cream p-6 shadow-[5px_5px_0_0_rgba(92,48,38,0.2)]">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="inline-flex items-center gap-2 border-2 border-pixel-coffee bg-pixel-amber px-3 py-1 font-display text-base text-pixel-coffee">
+                    <span className="size-2 bg-pixel-coffee" />
+                    {category}
+                  </span>
+                  <span className="h-0.5 flex-1 bg-pixel-coffee/30" />
+                </div>
+                <ComparisonCarousel 
+                  groups={comparisonGroups} 
+                  autoPlay={true}
+                  autoPlayInterval={4000}
+                />
+                {items.length > 0 && (
+                  <div className="mt-8">
+                    <IrregularWaterfall 
+                      items={items} 
+                      columns={4}
+                      gap={16}
+                      showTitle={true}
+                      autoScroll={true}
+                      autoScrollSpeed={0.8}
+                      autoScrollDirection="up"
+                    />
+                  </div>
+                )}
+              </section>
+            )
+          }
+          
+          // 其他分类：显示自动滚动瀑布流
           if (items.length === 0) return null
           
           return (

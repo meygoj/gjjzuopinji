@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { worksBySlug, type WorkDetailData } from "@/lib/works-data"
 
 export interface PortfolioWork {
   slug: string
@@ -15,50 +16,52 @@ export interface PortfolioWork {
   rotation: string
 }
 
-const defaultWorks: PortfolioWork[] = [
-  {
-    slug: "livestream-engine",
-    title: "爆款直播引擎",
-    category: "直播运营",
-    blurb: "主导快手无人直播闭环,单场 50 万+ GMV,高频 A/B 测试与轻量化混剪。",
-    cover: "/images/work-livestream.jpg",
+const portfolioLayout: Record<string, { tone: "light" | "dark" | "warm"; position: string; rotation: string }> = {
+  "livestream-engine": {
     tone: "dark",
     position: "md:col-span-5 md:row-span-2",
-    rotation: "transform rotate-[-1deg]"
+    rotation: "transform rotate-[-1deg]",
   },
-  {
-    slug: "brand-visual",
-    title: "品牌视觉资产",
-    category: "AIGC · 设计",
-    blurb: "Midjourney 结构化 Prompt 设计,保持 IP 角色与品牌视觉 100% 一致。",
-    cover: "/images/work-aigc.jpg",
+  "brand-visual": {
     tone: "light",
     position: "md:col-span-7 md:row-span-1",
-    rotation: "transform rotate-[0.5deg]"
+    rotation: "transform rotate-[0.5deg]",
   },
-  {
-    slug: "content-assembly",
-    title: "内容工业化流水线",
-    category: "自动化工作流",
-    blurb: "ComfyUI 节点工作流,把 AIGC 从&ldquo;抽卡&rdquo;变为精准可控的生产线。",
-    cover: "/images/work-workflow.jpg",
+  "content-assembly": {
     tone: "warm",
     position: "md:col-span-6 md:row-span-1",
-    rotation: "transform rotate-[-0.8deg]"
+    rotation: "transform rotate-[-0.8deg]",
   },
-  {
-    slug: "commerce-dashboard",
-    title: "商业数据矩阵",
-    category: "数据可视化",
-    blurb: "15K / 日带货峰值监控 · 复购率提升 25% 的全链路数据面板。",
-    cover: "/images/work-data.jpg",
+  "commerce-dashboard": {
     tone: "dark",
     position: "md:col-span-6 md:row-span-1",
-    rotation: "transform rotate-[1deg]"
+    rotation: "transform rotate-[1deg]",
   },
-]
+}
+
+const getWorks = (): PortfolioWork[] => {
+  const works = Object.values(worksBySlug)
+  return works.map(work => {
+    const layout = portfolioLayout[work.slug] || {
+      tone: "dark",
+      position: "md:col-span-6 md:row-span-1",
+      rotation: "transform rotate-[0deg]",
+    }
+    return {
+      slug: work.slug,
+      title: work.title,
+      category: work.category,
+      blurb: work.summary,
+      cover: work.cover,
+      tone: layout.tone,
+      position: layout.position,
+      rotation: layout.rotation,
+    }
+  })
+}
 
 export function WorkGrid() {
+  const works = getWorks()
   return (
     <section id="work" className="scroll-mt-20 flex flex-col gap-6 md:gap-8">
       <h2 className="font-display text-6xl leading-none text-pixel-coffee md:text-8xl">
@@ -66,7 +69,7 @@ export function WorkGrid() {
       </h2>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:grid-rows-2">
-        {defaultWorks.map((work) => (
+        {works.map(work => (
           <WorkCard key={work.slug} work={work} />
         ))}
       </div>
@@ -131,13 +134,21 @@ function WorkCard({ work }: { work: PortfolioWork }) {
       </div>
 
       <div className="relative flex-1 overflow-hidden border-t-2 border-pixel-coffee">
-        <Image
-          src={work.cover}
-          alt={work.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 600px"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {work.cover.startsWith('data:') || work.cover.startsWith('http') ? (
+          <img
+            src={work.cover}
+            alt={work.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={work.cover}
+            alt={work.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        )}
 
         <div
           aria-hidden

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { FileUpload } from "./file-upload"
 import { WaterfallItem, waterfallItems } from "@/lib/waterfall-data"
+import { worksBySlug } from "@/lib/works-data"
 
 export default function WaterfallAdminPanel() {
   const [items, setItems] = useState<WaterfallItem[]>(waterfallItems)
@@ -11,6 +12,13 @@ export default function WaterfallAdminPanel() {
   const [isEditing, setIsEditing] = useState(false)
   const [currentItem, setCurrentItem] = useState<WaterfallItem | null>(null)
   const [activeTab, setActiveTab] = useState<"list" | "form">("list")
+  const [customCategory, setCustomCategory] = useState("")
+  
+  // 动态获取所有分类
+  const categories = [...new Set([
+    ...Object.values(worksBySlug).map(work => work.category),
+    ...items.map(item => item.category)
+  ].filter(Boolean))] as string[]
 
   const handleFileUpload = async (file: File): Promise<string> => {
     try {
@@ -295,17 +303,32 @@ export const waterfallItems: WaterfallItem[] = ${JSON.stringify(items, null, 2)}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">分类</label>
-                    <select
-                      value={currentItem.category}
-                      onChange={(e) => updateItem("category", e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      <option value="">选择分类</option>
-                      <option value="直播运营">直播运营</option>
-                      <option value="AIGC · 设计">AIGC · 设计</option>
-                      <option value="自动化工作流">自动化工作流</option>
-                      <option value="数据可视化">数据可视化</option>
-                    </select>
+                    <div className="space-y-2">
+                      <select
+                        value={currentItem.category}
+                        onChange={(e) => updateItem("category", e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      >
+                        <option value="">选择分类</option>
+                        {categories.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                        <option value="custom">+ 自定义分类</option>
+                      </select>
+                      
+                      {currentItem.category === "custom" && (
+                        <input
+                          type="text"
+                          value={customCategory}
+                          onChange={(e) => {
+                            setCustomCategory(e.target.value)
+                            updateItem("category", e.target.value)
+                          }}
+                          className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50"
+                          placeholder="输入新的分类名称"
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
                 

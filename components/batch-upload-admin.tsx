@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import NextImage from "next/image"
 import { BatchUpload } from "./batch-upload"
 import { WaterfallItem, waterfallItems } from "@/lib/waterfall-data"
+import { worksBySlug } from "@/lib/works-data"
 import { Video, Image as ImageIcon, Edit3, Trash2, X, Check } from "lucide-react"
 
 interface BatchItem extends Omit<WaterfallItem, 'id' | 'originalSrc' | 'compareSrc'> {
@@ -14,6 +15,12 @@ export default function BatchUploadAdmin() {
   const [items, setItems] = useState<WaterfallItem[]>(waterfallItems)
   const [batchItems, setBatchItems] = useState<BatchItem[]>([])
   const [activeTab, setActiveTab] = useState<"upload" | "list">("upload")
+  
+  // 动态获取所有分类
+  const categories = [...new Set([
+    ...Object.values(worksBySlug).map(work => work.category),
+    ...items.map(item => item.category)
+  ].filter(Boolean))] as string[]
 
   const isVideoFile = (file: File) => file.type.startsWith("video/")
 
@@ -319,10 +326,9 @@ export const waterfallItems: WaterfallItem[] = ${JSON.stringify(items, null, 2)}
                               onChange={(e) => updateBatchItem(index, "category", e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                             >
-                              <option value="直播运营">直播运营</option>
-                              <option value="AIGC · 设计">AIGC · 设计</option>
-                              <option value="自动化工作流">自动化工作流</option>
-                              <option value="数据可视化">数据可视化</option>
+                              {categories.map((cat) => (
+                                <option key={cat} value={cat}>{cat}</option>
+                              ))}
                             </select>
                           </div>
 
