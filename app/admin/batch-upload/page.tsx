@@ -1,6 +1,9 @@
-"use client"
+import dynamic from "next/dynamic"
 
-import BatchUploadAdmin from "@/components/batch-upload-admin"
+const BatchUploadAdmin = dynamic(
+  () => import("@/components/batch-upload-admin"),
+  { ssr: false }
+)
 
 export default function BatchUploadPage() {
   return (

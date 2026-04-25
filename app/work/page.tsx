@@ -1,14 +1,35 @@
+import dynamic from "next/dynamic"
 import { ProfileHeader } from "@/components/profile-header"
 import { StatusBar } from "@/components/status-bar"
 import { HeroPortrait } from "@/components/hero-portrait"
 import { ServiceBadges } from "@/components/service-badges"
-import { WorkGrid } from "@/components/work-grid"
-import { StatsBlock } from "@/components/stats-block"
-import { Testimonial } from "@/components/testimonial"
-import { ExperienceTimeline } from "@/components/experience-timeline"
-import { ContactCard } from "@/components/contact-card"
-import { SiteFooter } from "@/components/site-footer"
 import { PixelBackground } from "@/components/pixel-background"
+
+// 懒加载大型客户端组件
+const WorkGrid = dynamic(
+  () => import("@/components/work-grid").then(mod => mod.WorkGrid),
+  { ssr: false }
+)
+const StatsBlock = dynamic(
+  () => import("@/components/stats-block").then(mod => mod.StatsBlock),
+  { ssr: false }
+)
+const Testimonial = dynamic(
+  () => import("@/components/testimonial").then(mod => mod.Testimonial),
+  { ssr: false }
+)
+const ExperienceTimeline = dynamic(
+  () => import("@/components/experience-timeline").then(mod => mod.ExperienceTimeline),
+  { ssr: false }
+)
+const ContactCard = dynamic(
+  () => import("@/components/contact-card").then(mod => mod.ContactCard),
+  { ssr: false }
+)
+const SiteFooter = dynamic(
+  () => import("@/components/site-footer").then(mod => mod.SiteFooter),
+  { ssr: false }
+)
 
 export default function WorkPage() {
   return (

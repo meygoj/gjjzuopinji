@@ -1,12 +1,19 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { PixelBackground } from '@/components/pixel-background'
 import { ProfileHeader } from '@/components/profile-header'
-import { ComparisonCarousel } from '@/components/comparison-carousel'
-import { IrregularWaterfall } from '@/components/irregular-waterfall'
-import { waterfallItems } from '@/lib/waterfall-data'
-import { worksBySlug } from '@/lib/works-data'
+
+// 懒加载大型客户端组件，关闭SSR
+const ComparisonCarousel = dynamic(
+  () => import('@/components/comparison-carousel').then(mod => mod.ComparisonCarousel),
+  { ssr: false }
+)
+const IrregularWaterfall = dynamic(
+  () => import('@/components/irregular-waterfall').then(mod => mod.IrregularWaterfall),
+  { ssr: false }
+)
 
 // 处理对比图数据
 const comparisonGroups = [

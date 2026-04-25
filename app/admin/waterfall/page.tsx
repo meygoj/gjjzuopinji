@@ -1,6 +1,9 @@
-"use client"
+import dynamic from "next/dynamic"
 
-import WaterfallAdminPanel from "@/components/waterfall-admin-panel"
+const WaterfallAdminPanel = dynamic(
+  () => import("@/components/waterfall-admin-panel"),
+  { ssr: false }
+)
 
 export default function AdminWaterfallPage() {
   return (

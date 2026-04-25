@@ -1,7 +1,9 @@
-"use client"
+import dynamic from "next/dynamic"
 
-import { useState } from "react"
-import WorksAdminPanel from "@/components/works-admin-panel"
+const WorksAdminPanel = dynamic(
+  () => import("@/components/works-admin-panel"),
+  { ssr: false }
+)
 
 export default function AdminWorksPage() {
   return (

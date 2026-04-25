@@ -1,6 +1,12 @@
+import dynamic from "next/dynamic"
 import { PixelBackground } from "@/components/pixel-background"
-import { WorkDetail } from "@/components/work-detail"
 import { worksBySlug } from "@/lib/works-data"
+
+// 懒加载大型客户端组件，关闭SSR
+const WorkDetail = dynamic(
+  () => import("@/components/work-detail").then(mod => mod.WorkDetail),
+  { ssr: false }
+)
 
 export async function generateStaticParams() {
   return Object.keys(worksBySlug).map((slug) => ({ slug }))
