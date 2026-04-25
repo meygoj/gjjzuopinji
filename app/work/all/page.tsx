@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { PixelBackground } from '@/components/pixel-background'
 import { ProfileHeader } from '@/components/profile-header'
+import { waterfallItems } from '@/lib/waterfall-data'
+import { worksBySlug } from '@/lib/works-data'
 
 // 懒加载大型客户端组件，关闭SSR
 const ComparisonCarousel = dynamic(

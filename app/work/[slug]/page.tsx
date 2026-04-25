@@ -2,10 +2,9 @@ import dynamic from "next/dynamic"
 import { PixelBackground } from "@/components/pixel-background"
 import { worksBySlug } from "@/lib/works-data"
 
-// 懒加载大型客户端组件，关闭SSR
+// 懒加载大型客户端组件
 const WorkDetail = dynamic(
-  () => import("@/components/work-detail").then(mod => mod.WorkDetail),
-  { ssr: false }
+  () => import("@/components/work-detail").then(mod => mod.WorkDetail)
 )
 
 export async function generateStaticParams() {

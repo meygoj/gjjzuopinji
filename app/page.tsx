@@ -1,3 +1,5 @@
+"use client"
+
 import dynamic from "next/dynamic"
 
 // 懒加载首页组件，减少服务端体积

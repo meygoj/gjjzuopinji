@@ -1,3 +1,5 @@
+"use client"
+
 import dynamic from "next/dynamic"
 
 // 懒加载管理面板，关闭SSR以减少初始体积

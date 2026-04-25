@@ -1,3 +1,5 @@
+"use client"
+
 import dynamic from "next/dynamic"
 import { ProfileHeader } from "@/components/profile-header"
 import { StatusBar } from "@/components/status-bar"
